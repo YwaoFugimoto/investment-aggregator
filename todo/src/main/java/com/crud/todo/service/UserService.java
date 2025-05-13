@@ -1,8 +1,11 @@
 package com.crud.todo.service;
 
 import com.crud.todo.controller.CreateUserDto;
+import com.crud.todo.entity.User;
 import com.crud.todo.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class UserService {
@@ -15,5 +18,10 @@ public class UserService {
 
     public void createUSer(CreateUserDto createUserDto) {
 
+        // dto -> entity
+        var entity = new User(null, createUserDto.username(), createUserDto.email(),createUserDto.password(), Instant.now(), null);
+
+
+        userRepository.save(entity);
     }
 }
