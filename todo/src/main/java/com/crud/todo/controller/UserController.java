@@ -20,7 +20,8 @@ public class UserController {
     @PostMapping
         public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
         var userId = userService.createUSer(createUserDto);
-        return ResponseEntity.created(URI.create("/v1/users" + userId.toString())).build();
+
+        return ResponseEntity.created(URI.create("/v1/users/" + userId.toString())).build();
     }
 
     @GetMapping
