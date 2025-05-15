@@ -10,17 +10,27 @@ public class AccountStock {
     private AccountStockId accountStockId;
 
     @ManyToOne
-    @MapsId("accountId")
     @JoinColumn(name = "account_id")
+    @MapsId("accountId")
     private Account account;
 
     @ManyToOne
-    @MapsId("stockId")
     @JoinColumn(name = "stock_id")
+    @MapsId("stockId")
     private Stock stock;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private int quantity;
+
+    public AccountStock() {
+    }
+
+    public AccountStock(AccountStockId accountStockId, Account account, Stock stock, int quantity) {
+        this.accountStockId = accountStockId;
+        this.account = account;
+        this.stock = stock;
+        this.quantity = quantity;
+    }
 
     public AccountStockId getAccountStockId() {
         return accountStockId;
@@ -46,21 +56,11 @@ public class AccountStock {
         this.stock = stock;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public AccountStock(AccountStockId accountStockId, Account account, Stock stock, Integer quantity) {
-        this.accountStockId = accountStockId;
-        this.account = account;
-        this.stock = stock;
-        this.quantity = quantity;
-    }
-
-    public AccountStock() {
     }
 }

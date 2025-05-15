@@ -9,21 +9,24 @@ public class Stock {
 
     @Id
     @Column(name = "stock_id")
-    private String stockId; //PETR4 M4G4L
+    private String stockId;
 
     @Column(name = "description")
     private String description;
+
+    public Stock() {
+    }
 
     public Stock(String stockId, String description) {
         this.stockId = stockId;
         this.description = description;
     }
 
-    public String getstockId() {
+    public String getStockId() {
         return stockId;
     }
 
-    public void setstockId(String stockId) {
+    public void setStockId(String stockId) {
         this.stockId = stockId;
     }
 
@@ -33,8 +36,5 @@ public class Stock {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Stock() {
     }
 }
