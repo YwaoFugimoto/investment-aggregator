@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +37,9 @@ class UserServiceTest {
 
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @Nested
     class createUser {
@@ -77,6 +82,65 @@ class UserServiceTest {
             );
 
             assertThrows(RuntimeException.class, () -> userService.createUSer(input));
+        }
+    }
+
+    @Nested
+    class getUserById{
+
+        @Test
+        @DisplayName("Should get user by id successfully when optional is present")
+        void shouldGetUserByIdSuccessfullyWhenOptionalIsPresent() {
+
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
+
+            var output = userService.getUserById(user.getUserId().toString());
+
+            assertTrue(output.isPresent());
+            assertEquals(user.getUserId(), uuidArgumentCaptor.getValue());
+        }
+
+        @Test
+        @DisplayName("Should get user by id successfully when optional is empty")
+        void shouldGetUserByIdSuccessfullyWhenOptionalIsEmpty() {
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty()).when(userRepository).findById(uuidArgumentCaptor.capture());
+
+            var output = userService.getUserById(userId.toString());
+
+            assertTrue(output.isEmpty());
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+        }
+    }
+
+    @Nested
+    class listUsers {
+        @Test
+        @DisplayName("Should return all users successfully")
+        void shouldReturnAllUsersSuccessfully() {
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            var userList = List.of(user);
+            doReturn(userList).when(userRepository).findAll();
+
+            var output = userService.listUsers();
+
+            assertNotNull(output);
+            assertEquals(userList.size(), output.size());
         }
     }
 }
