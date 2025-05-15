@@ -1,4 +1,4 @@
 package com.crud.todo.client.dto;
 
-public record StockDto() {
+public record StockDto(double regularMarketPrice) {
 }

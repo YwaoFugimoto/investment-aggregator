@@ -1,4 +1,6 @@
 package com.crud.todo.client.dto;
 
-public record BrapiResponseDto() {
+import java.util.List;
+
+public record BrapiResponseDto(List<StockDto> results) {
 }
