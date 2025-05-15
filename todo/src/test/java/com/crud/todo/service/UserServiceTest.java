@@ -188,7 +188,6 @@ class UserServiceTest {
     @Nested
     class updateUserById {
 
-
         @Test
         @DisplayName("Should update user by id when exists and username and password is filled")
         void shouldUpdateUserByIdWhenUsersExistsAndUsernameAndPasswordIsFilled() {
@@ -220,6 +219,28 @@ class UserServiceTest {
 
             verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
             verify(userRepository, times(1)).save(user);
+        }
+
+        @Test
+        @DisplayName("Should not update user when user does not exist")
+        void shouldNotUpdateUserWhenUserDoesNotExist() {
+
+            var updateUserDto = new UpdateUserDto(
+                    "newUsername",
+                    "newPassword"
+            );
+
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty()).when(userRepository).findById(uuidArgumentCaptor.capture());
+
+            userService.updateUserById(userId.toString(), updateUserDto);
+
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+            verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(0)).save(any());
         }
     }
 }
