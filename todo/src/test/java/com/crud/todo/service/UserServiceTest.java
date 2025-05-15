@@ -1,8 +1,10 @@
 package com.crud.todo.service;
 
 import com.crud.todo.controller.CreateUserDto;
+import com.crud.todo.controller.UpdateUserDto;
 import com.crud.todo.entity.User;
 import com.crud.todo.repository.UserRepository;
+import org.hibernate.sql.Update;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -180,6 +182,44 @@ class UserServiceTest {
 
             verify(userRepository, times(1)).existsById(uuidArgumentCaptor.getValue());
             verify(userRepository, times(1)).deleteById(any());
+        }
+    }
+
+    @Nested
+    class updateUserById {
+
+
+        @Test
+        @DisplayName("Should update user by id when exists and username and password is filled")
+        void shouldUpdateUserByIdWhenUsersExistsAndUsernameAndPasswordIsFilled() {
+
+            var updateUserDto = new UpdateUserDto(
+                    "newUsername",
+                    "newPassword"
+            );
+
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
+            doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
+
+            userService.updateUserById(user.getUserId().toString(), updateUserDto);
+
+            assertEquals(user.getUserId(), uuidArgumentCaptor.getValue());
+
+            var userCaptured = userArgumentCaptor.getValue();
+
+            assertEquals(updateUserDto.username(), userCaptured.getUsername());
+            assertEquals(updateUserDto.password(), userCaptured.getPassword());
+
+            verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(1)).save(user);
         }
     }
 }
