@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,6 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 //triple way
 //arrange
@@ -29,6 +32,9 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Captor
+    private ArgumentCaptor<User> userArgumentCaptor;
 
     @Nested
     class createUser {
@@ -44,7 +50,7 @@ class UserServiceTest {
                     Instant.now(),
                     null
             );
-            doReturn(user).when(userRepository).save(any());
+            doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
             var input = new CreateUserDto("username", "email@email.com", "password");
 
             //act
@@ -52,6 +58,25 @@ class UserServiceTest {
 
             //assert
             assertNotNull(output);
+
+            var userCaptured = userArgumentCaptor.getValue();
+
+            assertEquals(input.username(), userCaptured.getUsername());
+            assertEquals(input.email(), userCaptured.getEmail());
+            assertEquals(input.password(), userCaptured.getPassword());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when error occurs")
+        void shouldThrowExceptionWhenErrorOccurs() {
+            doThrow(new RuntimeException()).when(userRepository).save(any());
+            var input = new CreateUserDto(
+                    "username",
+                    "email@mail.com",
+                    "password"
+            );
+
+            assertThrows(RuntimeException.class, () -> userService.createUSer(input));
         }
     }
 }
