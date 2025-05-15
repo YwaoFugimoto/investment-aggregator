@@ -1,6 +1,7 @@
 package com.crud.todo.service;
 
 import com.crud.todo.controller.CreateUserDto;
+import com.crud.todo.controller.UpdateUserDto;
 import com.crud.todo.entity.User;
 import com.crud.todo.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,17 @@ public class UserService {
 
     public List<User> listUsers() {
         return userRepository.findAll();
+    }
+
+
+
+    public void deleteById(String userId) {
+        var id = UUID.fromString(userId);
+
+        var userExists = userRepository.existsById(id);
+
+        if ( userExists ) {
+            userRepository.deleteById(id);
+        }
     }
 }
