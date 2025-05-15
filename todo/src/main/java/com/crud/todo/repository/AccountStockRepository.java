@@ -1,5 +1,7 @@
 package com.crud.todo.repository;
 
+import com.crud.todo.entity.AccountStock;
+import com.crud.todo.entity.AccountStockId;
 import com.crud.todo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -7,6 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface AccountStockRepository extends JpaRepository<AccountStock, AccountStockId> {
     
 }
