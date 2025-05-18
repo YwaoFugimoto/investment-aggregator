@@ -19,14 +19,19 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToOne(cascade = CascadeType.ALL,
+            mappedBy = "account",
+            orphanRemoval = true)
+
     @PrimaryKeyJoinColumn
     private BillingAddress billingAddress;
 
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<AccountStock> accountStocks = new ArrayList<>();
 
     public Account() {
