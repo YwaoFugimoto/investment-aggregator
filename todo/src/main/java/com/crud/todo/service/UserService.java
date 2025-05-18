@@ -79,10 +79,14 @@ public class UserService {
         var userExists = userRepository.existsById(id);
 
         if ( userExists ) {
+            //delete all relations
+            billingAddressRepository.deleteById(id);
+            accountRepository.deleteById(id);
             userRepository.deleteById(id);
         }
     }
 
+    // create account FIND: inf loop somewhere
     public void createAccount(String userId, CreateAccountDto createAccountDto) {
 
         var user = userRepository.findById(UUID.fromString(userId))
@@ -91,7 +95,7 @@ public class UserService {
         var account = new Account(
                 UUID.randomUUID(),
                 user,
-                null,
+                null, // to-do create billing address
                 createAccountDto.description(),
                 new ArrayList<>()
         );
@@ -104,6 +108,8 @@ public class UserService {
                 createAccountDto.street(),
                 createAccountDto.number()
         );
+
+        accountCreated.setBillingAddress(billingAddress);
 
         billingAddressRepository.save(billingAddress);
     }
