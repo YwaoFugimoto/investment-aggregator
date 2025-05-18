@@ -38,7 +38,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    // display all users
     @GetMapping
     public ResponseEntity<List<User>> listUsers() {
         var users = userService.listUsers();
@@ -46,6 +46,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    // update user
     @PutMapping("/{userId}")
     public ResponseEntity<Void> updateUserById(@PathVariable("userId") String userId,
                                                @RequestBody UpdateUserDto updateUserDto) {
@@ -53,12 +54,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // delete user
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteById(@PathVariable("userId") String userId) {
         userService.deleteById(userId);
         return ResponseEntity.noContent().build();
     }
 
+    // create account
     @PostMapping("/{userId}/accounts")
     public ResponseEntity<Void> createAccount(@PathVariable("userId") String userId,
                                            @RequestBody CreateAccountDto createAccountDto) {
@@ -68,6 +71,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // list all accounts
     @GetMapping("/{userId}/accounts")
     public ResponseEntity<List<AccountResponseDto>> listAccounts(@PathVariable("userId") String userId) {
 
