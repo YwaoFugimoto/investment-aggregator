@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class AccountService {
 
-    @Value("#{enviroment.TOKEN}")
+//    @Value("#{environment.TOKEN}")
     private String TOKEN;
     private StockRepository stockRepository;
     private AccountRepository accountRepository;
