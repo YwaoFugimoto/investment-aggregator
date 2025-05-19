@@ -1,9 +1,10 @@
 package com.crud.todo.service;
 
-import com.crud.todo.controller.dto.AccountResponseDto;
+import com.crud.todo.controller.responseDto.AccountResponseDto;
 import com.crud.todo.controller.dto.CreateAccountDto;
 import com.crud.todo.controller.dto.CreateUserDto;
 import com.crud.todo.controller.dto.UpdateUserDto;
+import com.crud.todo.controller.responseDto.UserResponseDto;
 import com.crud.todo.entity.Account;
 import com.crud.todo.entity.BillingAddress;
 import com.crud.todo.entity.User;
@@ -20,10 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class UserService {
 
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
     private AccountRepository accountRepository;
 
@@ -45,12 +48,35 @@ public class UserService {
         return userSaved.getUserId();
     }
 
-    public Optional<User> getUserById(String userId){
-        return userRepository.findById(UUID.fromString(userId));
+    // list a user by id
+    public Optional<UserResponseDto> getUserById(String userId){
+
+        var user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return Optional.of(new UserResponseDto(
+                user.getUserId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getCreationTimestamp(),
+                user.getUpdateTimestamp(),
+                user.getAccounts().stream().map(account -> new AccountResponseDto(account.getAccountId().toString(), account.getDescription())).toList())
+                );
+
     }
 
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    // list all users
+    public List<UserResponseDto> listUsers() {
+
+        return userRepository.findAll().stream().map(user -> new UserResponseDto(
+                user.getUserId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getCreationTimestamp(),
+                user.getUpdateTimestamp(),
+                user.getAccounts().stream().map(account -> new AccountResponseDto(account.getAccountId().toString(), account.getDescription())).toList())).toList();
     }
 
     public void updateUserById(String userId, UpdateUserDto updateUserDto){
@@ -89,36 +115,42 @@ public class UserService {
     // create account FIND: inf loop somewhere
     public void createAccount(String userId, CreateAccountDto createAccountDto) {
 
+        // finding user todo - create function
         var user = userRepository.findById(UUID.fromString(userId))
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        // dto -> entity
         var account = new Account(
                 UUID.randomUUID(),
-                user,
-                null, // to-do create billing address
+                user, // user to relate
+                null, // todo - create billing address
                 createAccountDto.description(),
-                new ArrayList<>()
+                new ArrayList<>() // empty list
         );
 
+        // save and return entity
         var accountCreated = accountRepository.save(account);
 
         var billingAddress = new BillingAddress(
                 accountCreated.getAccountId(),
-                account,
+                account, // account to relate
                 createAccountDto.street(),
                 createAccountDto.number()
         );
 
-        accountCreated.setBillingAddress(billingAddress);
-
         billingAddressRepository.save(billingAddress);
     }
 
+    // inf loop somewhere
+    // list all accounts of ONE user
     public List<AccountResponseDto> listAccounts(String userId) {
+
+        // finding user
         var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return user.getAccounts().stream().map(ac -> new AccountResponseDto(ac.getAccountId().toString(), ac.getDescription())).toList();
+        // returning a list of AccountResponseDto
+        return user.getAccounts().stream().map(account -> new AccountResponseDto(account.getAccountId().toString(), account.getDescription())).toList();
     }
 }
 
