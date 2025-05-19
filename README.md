@@ -53,13 +53,17 @@ The backend provides RESTful endpoints for interaction:
 
 - ### `POST /users: Create a new user`
 
-- ### `GET /users/{id}: Retrieve user details`
+- ### `GET /users: Retrieve all users`
 
-- ### `PUT /users/{id}: Update user details`
+- ### `GET /users/{userId}: Retrieve specific user details`
 
-- ### `DELETE /users/{id}: Remove a user`
+- ### `PUT /users/{userId}: Update specific user details`
 
-### Finalcial stocks:
+- ### `DELETE /users/{userId}: Remove a user`
 
- - ### 
+### Financial accounts:
+
+- ### `GET /users/{userId}/accounts: Retrieve all accounts of a user`
+
+- ### `POST /users/{userId}/accounts: Create a new account for a user`
 
