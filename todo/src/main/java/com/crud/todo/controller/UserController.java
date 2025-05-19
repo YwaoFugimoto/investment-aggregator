@@ -1,9 +1,10 @@
 package com.crud.todo.controller;
 
-import com.crud.todo.controller.dto.AccountResponseDto;
+import com.crud.todo.controller.responseDto.AccountResponseDto;
 import com.crud.todo.controller.dto.CreateAccountDto;
 import com.crud.todo.controller.dto.CreateUserDto;
 import com.crud.todo.controller.dto.UpdateUserDto;
+import com.crud.todo.controller.responseDto.UserResponseDto;
 import com.crud.todo.entity.User;
 import com.crud.todo.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // create user
     @PostMapping
         public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
         var userId = userService.createUSer(createUserDto);
@@ -29,8 +31,9 @@ public class UserController {
         return ResponseEntity.created(URI.create("/v1/users/" + userId.toString())).build();
     }
 
+    // find user
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") String userId) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") String userId) {
         var user = userService.getUserById(userId);
         if ( user.isPresent() ){
             return ResponseEntity.ok(user.get());
@@ -40,7 +43,7 @@ public class UserController {
     }
     // display all users
     @GetMapping
-    public ResponseEntity<List<User>> listUsers() {
+    public ResponseEntity<List<UserResponseDto>> listUsers() {
         var users = userService.listUsers();
         
         return ResponseEntity.ok(users);
@@ -63,7 +66,7 @@ public class UserController {
 
     // create account
     @PostMapping("/{userId}/accounts")
-    public ResponseEntity<Void> createAccount(@PathVariable("userId") String userId,
+    public ResponseEntity<Void> createAccount (@PathVariable("userId") String userId,
                                            @RequestBody CreateAccountDto createAccountDto) {
 
         userService.createAccount(userId, createAccountDto);
@@ -71,12 +74,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    // list all accounts
+    // list all accounts of a specific user
     @GetMapping("/{userId}/accounts")
-    public ResponseEntity<List<AccountResponseDto>> listAccounts(@PathVariable("userId") String userId) {
-
-        var accounts = userService.listAccounts(userId);
-
-        return ResponseEntity.ok(accounts);
+    public ResponseEntity <List<AccountResponseDto>> listAccounts (@PathVariable("userId") String userId) {
+        return ResponseEntity.ok(userService.listAccounts(userId));
     }
 }
