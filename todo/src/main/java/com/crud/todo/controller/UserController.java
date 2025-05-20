@@ -34,13 +34,11 @@ public class UserController {
     // find user
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") String userId) {
-        var user = userService.getUserById(userId);
-        if ( user.isPresent() ){
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        var maybeUser = userService.getUserById(userId);
+        // return user if is present else return no found
+        return maybeUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     // display all users
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> listUsers() {
