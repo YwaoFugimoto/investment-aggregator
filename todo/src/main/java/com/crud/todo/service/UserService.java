@@ -49,21 +49,21 @@ public class UserService {
     }
 
     // list a user by id
-    public Optional<UserResponseDto> getUserById(String userId){
-
-        var user = userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        return Optional.of(new UserResponseDto(
-                user.getUserId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getCreationTimestamp(),
-                user.getUpdateTimestamp(),
-                user.getAccounts().stream().map(account -> new AccountResponseDto(account.getAccountId().toString(), account.getDescription())).toList())
-                );
-
+    public Optional<UserResponseDto> getUserById (String userId){
+        // if user isPresent() create response dto, else return isEmpty()
+        return userRepository
+                .findById(UUID.fromString(userId))
+                .map(user -> new UserResponseDto(
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getPassword(),
+                        user.getCreationTimestamp(),
+                        user.getUpdateTimestamp(),
+                        user.getAccounts().stream()
+                                .map(a -> new AccountResponseDto(a.getAccountId().toString(), a.getDescription()))
+                                .toList()
+                ));
     }
 
     // list all users
