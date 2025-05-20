@@ -3,6 +3,8 @@ package com.crud.todo.service;
 import com.crud.todo.controller.dto.CreateUserDto;
 import com.crud.todo.controller.dto.UpdateUserDto;
 import com.crud.todo.entity.User;
+import com.crud.todo.repository.AccountRepository;
+import com.crud.todo.repository.BillingAddressRepository;
 import com.crud.todo.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +33,11 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private BillingAddressRepository billingAddressRepository;
+    @Mock
+    private AccountRepository accountRepository;
+
 
     @InjectMocks
     private UserService userService;
@@ -100,6 +107,7 @@ class UserServiceTest {
                     Instant.now(),
                     null
             );
+
             doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
 
             var output = userService.getUserById(user.getUserId().toString());
@@ -109,9 +117,10 @@ class UserServiceTest {
         }
 
         @Test
-        @DisplayName("Should get user by id successfully when optional is empty")
-        void shouldGetUserByIdSuccessfullyWhenOptionalIsEmpty() {
+        @DisplayName("Should not get user by id successfully when optional is empty")
+        void shouldNotGetUserByIdSuccessfullyWhenOptionalIsEmpty() {
             var userId = UUID.randomUUID();
+
             doReturn(Optional.empty()).when(userRepository).findById(uuidArgumentCaptor.capture());
 
             var output = userService.getUserById(userId.toString());
@@ -151,7 +160,10 @@ class UserServiceTest {
         @DisplayName("Should delete user successfully when user exist")
         void shouldDeleteUserSuccessfullyWhenUserExist() {
 
+            // telling mockito to when call userRepository.existsById(UUID.randomUUID()) return true
+            // even if the UUID does not exist in the database
             doReturn(true).when(userRepository).existsById(uuidArgumentCaptor.capture());
+
 
             doNothing().when(userRepository).deleteById(uuidArgumentCaptor.capture());
 
@@ -242,6 +254,8 @@ class UserServiceTest {
             verify(userRepository, times(0)).save(any());
         }
     }
+    // todo create tests for accounts in user service (create account and list account)
+
 }
 
 
