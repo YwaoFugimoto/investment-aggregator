@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class UserService {
 
@@ -38,7 +36,7 @@ public class UserService {
         this.billingAddressRepository = billingAddressRepository;
     }
 
-    public UUID createUSer(CreateUserDto createUserDto) {
+    public UUID createUser(CreateUserDto createUserDto) {
 
         // dto -> entity
         var entity = new User(null, createUserDto.username(), createUserDto.email(),createUserDto.password(), Instant.now(), null);
@@ -112,7 +110,8 @@ public class UserService {
         }
     }
 
-    // create account FIND: inf loop somewhere
+    // create account
+
     public void createAccount(String userId, CreateAccountDto createAccountDto) {
 
         // finding user todo - create function
@@ -123,7 +122,7 @@ public class UserService {
         var account = new Account(
                 UUID.randomUUID(),
                 user, // user to relate
-                null, // todo - create billing address
+                null,
                 createAccountDto.description(),
                 new ArrayList<>() // empty list
         );
@@ -141,7 +140,6 @@ public class UserService {
         billingAddressRepository.save(billingAddress);
     }
 
-    // inf loop somewhere
     // list all accounts of ONE user
     public List<AccountResponseDto> listAccounts(String userId) {
 
