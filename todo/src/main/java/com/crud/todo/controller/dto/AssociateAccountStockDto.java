@@ -1,4 +1,4 @@
 package com.crud.todo.controller.dto;
 
-public record AccountStockDto(String stockId, int quantity) {
+public record AssociateAccountStockDto(String stockId, int quantity) {
 }
