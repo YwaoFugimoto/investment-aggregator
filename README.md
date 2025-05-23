@@ -48,14 +48,16 @@ docker compose up
 The application and databases services will now be running locally.
 
 ## API Documentation
+// to do - tell /v1
+
 The backend provides RESTful endpoints for interaction:
 ### Users: 
-
-- ### `POST /users: Create a new user`
 
 - ### `GET /users: Retrieve all users`
 
 - ### `GET /users/{userId}: Retrieve specific user details`
+
+- ### `POST /users: Create a new user`
 
 - ### `PUT /users/{userId}: Update specific user details`
 
@@ -66,4 +68,16 @@ The backend provides RESTful endpoints for interaction:
 - ### `GET /users/{userId}/accounts: Retrieve all accounts of a user`
 
 - ### `POST /users/{userId}/accounts: Create a new account for a user`
+
+###  Stock markets: 
+
+- ### `GET /stocks: Retrieve all stocks`
+
+- ### `POST /stocks: Create a new stock`
+
+### Stock - account association : 
+
+- ### `GET /accounts/{accountId}/stocks: Retrieve all stock of an account`
+
+- ### `POST /accounts/{accountId}/stocks: Associate a stock to an account`
 
